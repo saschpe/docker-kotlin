@@ -1,5 +1,8 @@
 sudo: required
 services:
   - docker
+env:
+  - KOTLIN_VERSION=1.2.20
+  - KOTLIN_VERSION=1.2.10
 script:
-  - ./scripts/docker/build
+  - ./scripts/docker/build --kotlin-version ${KOTLIN_VERSION}
