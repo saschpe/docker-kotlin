@@ -8,18 +8,27 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 . "${SCRIPT_DIR}/../inc.constants"
 . "${SCRIPT_DIR}/../inc.functions"
 
+# Default values
+DEFAULT_KOTLIN_VERSION="1.2.20"
+
 
 # Functions
 function usage {
     echo -e "Usage: ${0} [OPTIONS]"
+    echo -e "  --kotlin-version VERSION\t(default: ${DEFAULT_KOTLIN_VERSION})"
     exit 1
 }
 
 
 # Command-line arguments
+kotlin_version=${DEFAULT_KOTLIN_VERSION}
 while [[ $# -gt 0 ]] ; do
     key="$1"
     case $key in
+    --kotlin-version)
+        kotlin_version="$2"
+        shift # past argument
+        ;;
     -h|--help)
         usage
         shift # past argument
@@ -33,5 +42,6 @@ done
 
 # Let's roll
 safe docker build \
-    -t ${DOCKER_IMAGE}:latest \
+    --build-arg kotlin_version=${kotlin_version} \
+    -t ${DOCKER_IMAGE}:${kotlin_version} \
     .
