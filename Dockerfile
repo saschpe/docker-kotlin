@@ -1,7 +1,7 @@
 FROM openjdk:8-alpine
 LABEL maintainer="Sascha Peilicke <sascha@peilicke.de"
 
-ARG kotlin_version=1.2.20
+ARG kotlin_version=1.3.20
 
 LABEL description="Kotlin ${kotlin_version}"
 
