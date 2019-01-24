@@ -9,6 +9,10 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 . "${SCRIPT_DIR}/../inc.functions"
 
 
+# Defaults
+DEFAULT_KOTLIN_VERSION=$(grep kotlin_version= "${SCRIPT_DIR}/../../Dockerfile" | cut -d"=" -f2)
+
+
 # Functions
 function usage {
     echo -e "Usage: ${0} [OPTIONS]"
@@ -44,6 +48,7 @@ done
 # Let's roll
 image_tag=${kotlin_version}
 
+echo "Building image tag ${image_tag}..."
 safe docker build \
     --build-arg kotlin_version=${kotlin_version} \
     --tag ${DOCKER_IMAGE}:${image_tag} .
@@ -53,6 +58,7 @@ fi
 
 # Update 'latest' tag if script argument match defaults
 if [ ${kotlin_version} = ${DEFAULT_KOTLIN_VERSION} ]; then
+    echo "Tagging as 'latest'..."
     safe docker tag ${DOCKER_IMAGE}:${image_tag} ${DOCKER_IMAGE}:latest
     if [ ${docker_push} ] ; then
         safe docker push ${DOCKER_IMAGE}:latest
