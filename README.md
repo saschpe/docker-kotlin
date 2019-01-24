@@ -12,7 +12,11 @@ Invoke the container directly to run the *kotlin* binary:
 
     docker run --rm saschpe/kotlin -help
 
-If you need to run the *kotlinc* binary, use another container instead.
+If you need to run the *kotlinc* binary, you can supply a differen entrypoint:
+
+    docker run --entrypoint kotlinc saschpe/kotlin -help
+
+Or use another container image instead:
 
     docker run --rm saschpe/kotlinc -help
 
