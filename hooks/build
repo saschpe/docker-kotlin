@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for kotlin_version in ${KOTLIN_VERSION[*]} ; do
+    ./scripts/docker/build \
+        --kotlin-version ${kotlin_version} \
+        --docker-push
+done
