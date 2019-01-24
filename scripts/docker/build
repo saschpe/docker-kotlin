@@ -8,14 +8,12 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 . "${SCRIPT_DIR}/../inc.constants"
 . "${SCRIPT_DIR}/../inc.functions"
 
-# Default values
-DEFAULT_KOTLIN_VERSION="1.2.20"
-
 
 # Functions
 function usage {
     echo -e "Usage: ${0} [OPTIONS]"
     echo -e "  --kotlin-version VERSION\t(default: ${DEFAULT_KOTLIN_VERSION})"
+    echo -e "  --docker-push\t\t\t(optional)"
     exit 1
 }
 
@@ -29,6 +27,9 @@ while [[ $# -gt 0 ]] ; do
         kotlin_version="$2"
         shift # past argument
         ;;
+    --docker-push)
+        docker_push=true
+        ;;
     -h|--help)
         usage
         shift # past argument
@@ -41,7 +42,19 @@ done
 
 
 # Let's roll
+image_tag=${kotlin_version}
+
 safe docker build \
     --build-arg kotlin_version=${kotlin_version} \
-    -t ${DOCKER_IMAGE}:${kotlin_version} \
-    .
+    --tag ${DOCKER_IMAGE}:${image_tag} .
+if [ ${docker_push} ] ; then
+    safe docker push ${DOCKER_IMAGE}:${image_tag}
+fi
+
+# Update 'latest' tag if script argument match defaults
+if [ ${kotlin_version} = ${DEFAULT_KOTLIN_VERSION} ]; then
+    safe docker tag ${DOCKER_IMAGE}:${image_tag} ${DOCKER_IMAGE}:latest
+    if [ ${docker_push} ] ; then
+        safe docker push ${DOCKER_IMAGE}:latest
+    fi
+fi
